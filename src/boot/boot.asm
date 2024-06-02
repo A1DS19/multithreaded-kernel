@@ -67,6 +67,11 @@ load32:
     mov ss, ax       ; load the stack segment
     mov ebp, 0x00200000 ; set the base pointer
     mov esp, ebp        ; set the stack pointer
+
+    in al, 0x92         ; read the CMOS status register
+    or al, 2            ; set the bit 4 of the CMOS status register
+    out 0x92, al        ; write the CMOS status register
+
     jmp $
 
 times 510-($-$$) db 0   ; fill 510 bytes with 0
