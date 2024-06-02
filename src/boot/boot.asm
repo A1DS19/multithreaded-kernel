@@ -59,20 +59,62 @@ gdt_descriptor:    ; GDT descriptor
 
 [BITS 32]
 load32:
-    mov ax, DATA_SEG ; load the data segment
-    mov ds, ax       ; load the data segment
-    mov es, ax       ; load the extra segment
-    mov fs, ax       ; load the stack segment
-    mov gs, ax       ; load the stack pointer
-    mov ss, ax       ; load the stack segment
-    mov ebp, 0x00200000 ; set the base pointer
-    mov esp, ebp        ; set the stack pointer
+    mov eax, 1
+    mov ecx, 100
+    mov edi, 0x0100000
+    call ata_lba_read
+    jmp CODE_SEG:0x100000
 
-    in al, 0x92         ; read the CMOS status register
-    or al, 2            ; set the bit 4 of the CMOS status register
-    out 0x92, al        ; write the CMOS status register
+ata_lba_read:
+    mov ebx, eax, ; Backup the LBA
+    
+    ; Send the LBA to the ATA controller
+    shr eax, 24
+    or eax, 0xe0
+    mov dx, 0x1f6
+    out dx, al
+    ; Send the total sector count to the ATA controller
+    mov eax, ecx
+    mov dx, 0x1f2
+    out dx, al
 
-    jmp $
+    ; Send the LBA to the ATA controller
+    mov eax, ebx
+    mov dx, 0x1f3
+    out dx, al
+
+    ; Send more of the LBA to the ATA controller
+    mov dx, 0x1f4
+    mov eax, ebx ; Restore the LBA
+    shr eax, 8
+    out dx, al
+
+    mov dx, 0x1f5
+    mov eax, ebx ; Restore the LBA
+    shr eax, 16
+    out dx, al
+
+    mov dx, 0x1f7
+    mov al, 0x20
+    out dx, al
+
+.next_sector:
+    push ecx
+
+.try_again:
+    mov dx, 0x1f7
+    in al, dx
+    test al, 8
+    jz .try_again
+
+    mov ecx, 256
+    mov dx, 0x1f0
+    rep insw
+
+    pop ecx
+    loop .next_sector
+
+    ret
 
 times 510-($-$$) db 0   ; fill 510 bytes with 0
 dw 0xaa55               ; boot signature
