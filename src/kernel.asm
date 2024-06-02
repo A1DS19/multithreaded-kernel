@@ -1,5 +1,6 @@
 [BITS 32]
 global _start
+extern kernel_main ; the kernel entry point, defined in kernel.c
 
 CODE_SEG equ 0x08
 DATA_SEG equ 0x10
@@ -18,7 +19,7 @@ _start:
     in al, 0x92         ; read the CMOS status register
     or al, 2            ; set the bit 4 of the CMOS status register
     out 0x92, al        ; write the CMOS status register
-
+    call kernel_main   ; call the kernel
     jmp $
 
 ; Added for aligment purposes
