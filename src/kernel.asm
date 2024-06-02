@@ -14,8 +14,12 @@ _start:
     mov ebp, 0x00200000 ; set the base pointer
     mov esp, ebp        ; set the stack pointer
 
+    ; enable the A20 line
     in al, 0x92         ; read the CMOS status register
     or al, 2            ; set the bit 4 of the CMOS status register
     out 0x92, al        ; write the CMOS status register
 
     jmp $
+
+; Added for aligment purposes
+times 512-($-$$) db 0   ; fill the rest of the sector with zeros
