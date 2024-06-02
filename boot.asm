@@ -18,9 +18,25 @@ step2:
     mov ss, ax      ; load the stack segment
     mov sp, 0x7c00  ; load the stack pointer
     sti             ; enables interrupts
-    mov si, message ; load the address of the message
+
+    mov ah, 2       ; read the sector from the disk
+    mov al, 1       ; read one sector
+    mov ch, 0       ; cylinder number
+    mov cl, 2       ; sector number
+    mov dh, 0       ; head number
+    mov bx, buffer  ; load the buffer
+    int 0x13        ; call BIOS disk interrupt
+    jc error        ; jump to error if there is an error
+
+    mov si, buffer  ; load the buffer
     call print      ; call the print function
+
     jmp $           ; infinite loop
+
+error:
+    mov si, error_message ; load the error message
+    call print            ; call the print function
+    jmp $                 ; infinite loop
 
 print:
     mov bx, 0       ; set the page number to 0
@@ -38,7 +54,9 @@ print_char:
     int 0x10    ; call BIOS video interrupt
     ret         ; return from the function
 
-message: db "Hello, World!", 0  ; the message to print
+error_message: db "Failed to load sector", 0
 
 times 510-($-$$) db 0   ; fill 510 bytes with 0
 dw 0xaa55               ; boot signature
+
+buffer:
