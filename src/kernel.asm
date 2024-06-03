@@ -19,6 +19,15 @@ _start:
     in al, 0x92         ; read the CMOS status register
     or al, 2            ; set the bit 4 of the CMOS status register
     out 0x92, al        ; write the CMOS status register
+
+    mov al, 00010001b
+    out 0x20, al
+    mov al, 0x20
+    out 0x21, al
+    mov al, 00000001b
+    out 0x21, al
+
+    sti ; enable interrupts
     call kernel_main   ; call the kernel
     jmp $
 
