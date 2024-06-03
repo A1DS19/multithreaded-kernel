@@ -1,5 +1,5 @@
 # Multithreaded kernel in C
-This is a multithreaded kernel written in C.
+This is a multithreaded kernel written in C and asm.
 
 ## How to run
 - Create cross compiler: https://osdev.org/GCC_Cross-Compiler
