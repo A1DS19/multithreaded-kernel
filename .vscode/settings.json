@@ -59,6 +59,7 @@
   "files.associations": {
     "*.ejs": "html",
     "idt.h": "c",
-    "config.h": "c"
+    "config.h": "c",
+    "kheap.h": "c"
   }
 }
