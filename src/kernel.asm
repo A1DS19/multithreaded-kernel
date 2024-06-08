@@ -27,7 +27,6 @@ _start:
     mov al, 00000001b
     out 0x21, al
 
-    sti ; enable interrupts
     call kernel_main   ; call the kernel
     jmp $
 
