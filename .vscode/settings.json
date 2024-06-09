@@ -60,6 +60,7 @@
     "*.ejs": "html",
     "idt.h": "c",
     "config.h": "c",
-    "kheap.h": "c"
+    "kheap.h": "c",
+    "memory.h": "c"
   }
 }
