@@ -8,4 +8,5 @@
 #define OS_HEAP_BLOCK_SIZE 4096 // 4 KB block size
 #define OS_HEAP_ADDRESS 0x01000000 // 16 MB heap address
 #define OS_HEAP_TABLE_ADDRESS 0x00007E00 // 31.5 KB heap table address
+#define OS_SECTOR_SIZE 512 // 512 bytes per sector
 #endif
